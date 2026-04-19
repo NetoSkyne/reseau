@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapitre 1 — Modèles OSI & TCP/IP</title>
+<style>
+  @media print{.no-print{display:none!important}*{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:13px;color:#1a1a1a;background:#f7f7f5;min-height:100vh}
+  .nav{display:flex;gap:2px;padding:16px 24px 0;background:#f7f7f5;position:sticky;top:0;z-index:10;border-bottom:0.5px solid #e0e0e0;align-items:center}
+  .back{font-size:12px;color:#888;text-decoration:none;margin-right:16px;padding:8px 0}
+  .back:hover{color:#1a1a1a}
+  .nav-btn{padding:8px 18px;font-size:12px;font-weight:500;cursor:pointer;border:none;background:transparent;color:#888;border-bottom:2px solid transparent;transition:all .15s}
+  .nav-btn.active{color:#1a1a1a;border-bottom-color:#1a1a1a}
+  .nav-btn:hover{color:#1a1a1a}
+  .tab-content{display:none;padding:24px;max-width:860px;margin:0 auto}
+  .tab-content.active{display:block}
+  h1{font-size:22px;font-weight:600;margin-bottom:4px}
+  h2{font-size:16px;font-weight:600;margin:24px 0 10px}
+  h3{font-size:13px;font-weight:600;margin:16px 0 6px}
+  p{line-height:1.7;color:#444;margin-bottom:10px}
+  .subtitle{font-size:12px;color:#888;margin-bottom:24px}
+  .section-label{font-size:10px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:.08em;margin:20px 0 8px}
+  code{font-family:monospace;font-size:12px;background:#f0f0ee;padding:1px 5px;border-radius:3px}
+  .card{background:#fff;border:0.5px solid #e0e0e0;border-radius:10px;padding:14px 16px;margin-bottom:12px}
+  .card-title{font-size:13px;font-weight:600;margin-bottom:6px}
+  .card-body{font-size:12px;color:#555;line-height:1.7}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}
+  .pill{display:inline-block;font-size:10px;padding:2px 8px;border-radius:999px;font-weight:500;margin:1px}
+  .p-purple{background:#EEEDFE;color:#3C3489}
+  .p-blue{background:#E6F1FB;color:#0C447C}
+  .p-teal{background:#E1F5EE;color:#085041}
+  .p-amber{background:#FAEEDA;color:#633806}
+  .p-coral{background:#FAECE7;color:#712B13}
+  .p-green{background:#EAF3DE;color:#27500A}
+  .p-gray{background:#F1EFE8;color:#444441}
+  .callout{background:#EAF3DE;border-left:3px solid #3B6D11;border-radius:0 8px 8px 0;padding:10px 14px;margin:12px 0;font-size:12px;color:#27500A;line-height:1.6}
+  .callout-warn{background:#FAEEDA;border-left:3px solid #BA7517;border-radius:0 8px 8px 0;padding:10px 14px;margin:12px 0;font-size:12px;color:#633806;line-height:1.6}
+  .callout-engie{background:#E6F1FB;border-left:3px solid #185FA5;border-radius:0 8px 8px 0;padding:10px 14px;margin:12px 0;font-size:12px;color:#0C447C;line-height:1.6}
+  table{width:100%;border-collapse:collapse;margin-bottom:16px}
+  th{font-size:10px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:.06em;padding:7px 8px;text-align:left;border-bottom:1.5px solid #e0e0e0;background:#fafafa}
+  td{padding:7px 8px;font-size:11px;border-bottom:0.5px solid #ebebeb;vertical-align:middle}
+  tr:last-child td{border-bottom:none}
+  .dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:5px;vertical-align:middle}
+  .mnemonic{background:#f0f0ee;border-radius:8px;padding:12px 16px;font-size:13px;color:#555;line-height:2;margin:12px 0}
+  .mnemonic strong{color:#1a1a1a}
+  .encap{display:flex;flex-direction:column;gap:5px;margin:12px 0}
+  .encap-row{display:flex;align-items:center;gap:8px}
+  .encap-lbl{font-size:10px;color:#888;min-width:64px;text-align:right;flex-shrink:0}
+  .encap-blocks{display:flex;gap:3px;flex:1}
+  .eb{display:flex;align-items:center;justify-content:center;height:26px;border-radius:4px;font-size:10px;font-weight:600;padding:0 8px;white-space:nowrap}
+  .eb-data{background:#E1F5EE;color:#085041;flex:1}
+  .eb-tcp{background:#FAEEDA;color:#633806}
+  .eb-ip{background:#FAECE7;color:#712B13}
+  .eb-eth{background:#E6F1FB;color:#0C447C}
+  .eb-fcs{background:#EAF3DE;color:#27500A}
+  .eb-bits{background:#F1EFE8;color:#444441;flex:1;font-family:monospace;font-size:9px}
+  .print-btn{display:inline-block;padding:7px 16px;font-size:12px;cursor:pointer;border:0.5px solid #ccc;border-radius:6px;background:#fff;color:#444;margin-bottom:20px}
+  .print-btn:hover{background:#f0f0ee}
+  .divider{height:0.5px;background:#e0e0e0;margin:20px 0}
+  .footer{font-size:11px;color:#aaa;text-align:center;margin-top:24px;padding-top:16px;border-top:0.5px solid #e0e0e0}
+  .quiz-progress{height:4px;background:#e0e0e0;border-radius:2px;margin-bottom:20px;overflow:hidden}
+  .quiz-fill{height:100%;background:#378ADD;border-radius:2px;transition:width .4s}
+  .q-num{font-size:11px;color:#888;margin-bottom:6px}
+  .q-text{font-size:15px;font-weight:500;color:#1a1a1a;margin-bottom:12px;line-height:1.5}
+  .q-hint{background:#f7f7f5;border-radius:6px;padding:8px 12px;font-size:12px;color:#666;margin-bottom:16px;line-height:1.6}
+  .q-input{width:100%;border:0.5px solid #ccc;border-radius:8px;padding:10px 12px;font-size:13px;font-family:inherit;resize:vertical;min-height:80px;margin-bottom:10px;outline:none;transition:border-color .15s}
+  .q-input:focus{border-color:#378ADD}
+  .q-btn{padding:8px 20px;font-size:13px;cursor:pointer;border-radius:8px;border:0.5px solid #ccc;background:#1a1a1a;color:#fff}
+  .q-btn-sec{background:#fff;color:#1a1a1a;margin-left:8px}
+  .feedback{border-radius:8px;padding:12px 14px;margin-top:12px;font-size:12px;line-height:1.7;display:none}
+  .feedback.correct{background:#EAF3DE;color:#27500A;border:0.5px solid #97C459}
+  .feedback.partial{background:#FAEEDA;color:#633806;border:0.5px solid #EF9F27}
+  .feedback.wrong{background:#FCEBEB;color:#501313;border:0.5px solid #F09595}
+  .feedback.show{display:block}
+  .score-card{background:#fff;border:0.5px solid #e0e0e0;border-radius:10px;padding:20px;text-align:center;margin-top:16px}
+  .score-num{font-size:40px;font-weight:600}
+  .score-label{font-size:13px;color:#888;margin-top:4px}
+  .score-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:0.5px solid #ebebeb;font-size:12px}
+  .score-row:last-child{border-bottom:none}
+  .score-detail{margin-top:16px;text-align:left}
+</style>
+</head>
+<body>
+<div class="nav no-print">
+  <a href="index.html" class="back">← Index</a>
+  <button class="nav-btn active" onclick="showTab('cours',event)">Cours</button>
+  <button class="nav-btn" onclick="showTab('cheatsheet',event)">Cheat sheet</button>
+  <button class="nav-btn" onclick="showTab('quiz',event)">Quiz</button>
+</div>
+
+<!-- COURS -->
+<div class="tab-content active" id="tab-cours">
+  <h1>Chapitre 1 — Modèles OSI & TCP/IP</h1>
+  <p class="subtitle">Socle fondamental · Encapsulation · Équipements réseau · Contexte ENGIE MNOT</p>
+  <button class="print-btn no-print" onclick="window.print()">Imprimer / PDF</button>
+
+  <h2>1. Pourquoi ces modèles ?</h2>
+  <p>Le réseau est complexe : des milliers de fabricants, de protocoles, de technologies différentes doivent fonctionner ensemble. Pour y mettre de l'ordre, l'ISO a créé le modèle OSI — un cadre de référence en 7 couches qui permet à tous les acteurs du réseau de parler le même langage.</p>
+  <div class="callout-engie">Chez ENGIE, quand ton équipe Fortinet dit "problème de couche 3" ou que Zscaler parle d'"inspection L7", ils font référence à ce modèle. Le comprendre, c'est comprendre leur langage.</div>
+
+  <h2>2. Les 7 couches OSI</h2>
+  <table>
+    <thead><tr><th>#</th><th>Couche</th><th>PDU</th><th>Rôle</th><th>Chez ENGIE</th></tr></thead>
+    <tbody>
+      <tr><td>7</td><td><span class="dot" style="background:#7F77DD"></span>Application</td><td><span class="pill p-purple">Données</span></td><td style="color:#555">HTTP, DNS, SMTP</td><td style="color:#555">Portail ENGIE, email</td></tr>
+      <tr><td>6</td><td><span class="dot" style="background:#378ADD"></span>Présentation</td><td><span class="pill p-purple">Données</span></td><td style="color:#555">TLS, encodage</td><td style="color:#555">SSL inspection Zscaler</td></tr>
+      <tr><td>5</td><td><span class="dot" style="background:#1D9E75"></span>Session</td><td><span class="pill p-purple">Données</span></td><td style="color:#555">Sessions</td><td style="color:#555">VPN FortiClient</td></tr>
+      <tr><td>4</td><td><span class="dot" style="background:#EF9F27"></span>Transport</td><td><span class="pill p-amber">Segment</span></td><td style="color:#555">TCP/UDP, ports</td><td style="color:#555">Lien SD-WAN</td></tr>
+      <tr><td>3</td><td><span class="dot" style="background:#D85A30"></span>Réseau</td><td><span class="pill p-coral">Paquet</span></td><td style="color:#555">IP, routage, IPSec</td><td style="color:#555">FortiGate</td></tr>
+      <tr><td>2</td><td><span class="dot" style="background:#185FA5"></span>Liaison</td><td><span class="pill p-blue">Trame</span></td><td style="color:#555">MAC, VLAN</td><td style="color:#555">Switch IT/OT</td></tr>
+      <tr><td>1</td><td><span class="dot" style="background:#888780"></span>Physique</td><td><span class="pill p-gray">Bits</span></td><td style="color:#555">Fibre, câble, Wi-Fi</td><td style="color:#555">4G backup</td></tr>
+    </tbody>
+  </table>
+  <div class="callout-warn">Le nom de la couche et le nom du PDU sont deux choses différentes. La couche s'appelle "Réseau", ce qui circule à cette couche s'appelle un "Paquet".</div>
+  <div class="mnemonic"><strong>P</strong>our <strong>L</strong>es <strong>R</strong>éseaux <strong>T</strong>rès <strong>S</strong>écurisés, <strong>P</strong>rotéger les <strong>A</strong>pplications<br><span style="font-size:11px;color:#888">Physique · Liaison · Réseau · Transport · Session · Présentation · Application</span></div>
+
+  <h2>3. OSI vs TCP/IP</h2>
+  <div class="grid2">
+    <div class="card"><p class="card-title">OSI — 7 couches</p><p class="card-body">Modèle théorique de référence. Utilisé pour parler un langage commun entre ingénieurs et fabricants.</p></div>
+    <div class="card"><p class="card-title">TCP/IP — 4 couches</p><p class="card-body"><strong>Application</strong> = OSI 5+6+7<br><strong>Transport</strong> = OSI 4<br><strong>Internet</strong> = OSI 3<br><strong>Accès réseau</strong> = OSI 1+2</p></div>
+  </div>
+
+  <h2>4. L'encapsulation</h2>
+  <p>Chaque couche ajoute une enveloppe autour de ce qui existe déjà — on descend de haut en bas. À l'arrivée, le destinataire décapsule de bas en haut.</p>
+  <div class="encap">
+    <div class="encap-row"><span class="encap-lbl">Données</span><div class="encap-blocks"><div class="eb eb-data">Données</div></div></div>
+    <div class="encap-row"><span class="encap-lbl">Segment</span><div class="encap-blocks"><div class="eb eb-tcp">TCP</div><div class="eb eb-data">Données</div></div></div>
+    <div class="encap-row"><span class="encap-lbl">Paquet</span><div class="encap-blocks"><div class="eb eb-ip">IP</div><div class="eb eb-tcp">TCP</div><div class="eb eb-data">Données</div></div></div>
+    <div class="encap-row"><span class="encap-lbl">Trame</span><div class="encap-blocks"><div class="eb eb-eth">ETH</div><div class="eb eb-ip">IP</div><div class="eb eb-tcp">TCP</div><div class="eb eb-data">Données</div><div class="eb eb-fcs">FCS</div></div></div>
+    <div class="encap-row"><span class="encap-lbl">Bits</span><div class="encap-blocks"><div class="eb eb-bits">01000101 01010100 01001000 00101111 01101001 ...</div></div></div>
+  </div>
+  <div class="callout">Règle clé : chaque couche ne lit QUE son propre en-tête. Un routeur lit l'IP, ignore Ethernet et TCP. Un switch lit Ethernet, ignore le reste.</div>
+
+  <h2>5. Équipements & couches</h2>
+  <div class="grid3">
+    <div class="card"><p class="card-title">Switch <span class="pill p-blue">C2</span></p><p class="card-body">Lit MAC · ignore IP/TCP<br>VLANs IT/OT chez ENGIE</p></div>
+    <div class="card"><p class="card-title">Routeur <span class="pill p-coral">C3</span></p><p class="card-body">Lit IP · ignore MAC/TCP<br>FortiGate SD-WAN</p></div>
+    <div class="card"><p class="card-title">NGFW/Zscaler <span class="pill p-purple">C4→C7</span></p><p class="card-body">Lit ports/TLS/appli<br>C1-C3 gérés en amont</p></div>
+  </div>
+
+  <h2>6. MAC vs IP & IPSec</h2>
+  <div class="grid2">
+    <div class="card"><p class="card-title">MAC vs IP</p><p class="card-body"><span class="pill p-blue">MAC</span> physique · locale · change à chaque routeur = "prochain arrêt"<br><br><span class="pill p-coral">IP</span> logique · globale · reste bout en bout = "destination finale"</p></div>
+    <div class="card"><p class="card-title">IPSec = couche 3</p><p class="card-body">Encapsule un paquet IP dans un nouveau paquet IP.<br><br><strong>[IP] [ESP] [Paquet IP original]</strong><br><br>Tunnels overlay SD-WAN FortiGate chez ENGIE.</p></div>
+  </div>
+  <div class="footer">Chapitre 1 · <a href="index.html">← Retour à l'index</a> · Prochain : Chapitre 2 — Adressage IP & Routage</div>
+</div>
+
+<!-- CHEAT SHEET -->
+<div class="tab-content" id="tab-cheatsheet">
+  <h1>Cheat Sheet — Chapitre 1</h1>
+  <p class="subtitle">Modèles OSI & TCP/IP · Référence rapide</p>
+  <button class="print-btn no-print" onclick="window.print()">Imprimer / PDF</button>
+
+  <p class="section-label">7 couches + PDU</p>
+  <table>
+    <thead><tr><th>#</th><th>Couche</th><th>PDU</th><th>Rôle clé</th><th>Chez ENGIE</th></tr></thead>
+    <tbody>
+      <tr><td>7</td><td><span class="dot" style="background:#7F77DD"></span>Application</td><td><span class="pill p-purple">Données</span></td><td style="color:#555">HTTP, DNS, SMTP</td><td style="color:#555">Portail, email</td></tr>
+      <tr><td>6</td><td><span class="dot" style="background:#378ADD"></span>Présentation</td><td><span class="pill p-purple">Données</span></td><td style="color:#555">TLS, encodage</td><td style="color:#555">SSL inspection</td></tr>
+      <tr><td>5</td><td><span class="dot" style="background:#1D9E75"></span>Session</td><td><span class="pill p-purple">Données</span></td><td style="color:#555">Sessions</td><td style="color:#555">VPN FortiClient</td></tr>
+      <tr><td>4</td><td><span class="dot" style="background:#EF9F27"></span>Transport</td><td><span class="pill p-amber">Segment</span></td><td style="color:#555">TCP/UDP, ports</td><td style="color:#555">SD-WAN</td></tr>
+      <tr><td>3</td><td><span class="dot" style="background:#D85A30"></span>Réseau</td><td><span class="pill p-coral">Paquet</span></td><td style="color:#555">IP, routage, IPSec</td><td style="color:#555">FortiGate</td></tr>
+      <tr><td>2</td><td><span class="dot" style="background:#185FA5"></span>Liaison</td><td><span class="pill p-blue">Trame</span></td><td style="color:#555">MAC, VLAN</td><td style="color:#555">Switch</td></tr>
+      <tr><td>1</td><td><span class="dot" style="background:#888780"></span>Physique</td><td><span class="pill p-gray">Bits</span></td><td style="color:#555">Fibre, câble</td><td style="color:#555">4G backup</td></tr>
+    </tbody>
+  </table>
+
+  <p class="section-label">Mnémotechnique</p>
+  <div class="mnemonic"><strong>P</strong>our <strong>L</strong>es <strong>R</strong>éseaux <strong>T</strong>rès <strong>S</strong>écurisés, <strong>P</strong>rotéger les <strong>A</strong>pplications</div>
+
+  <p class="section-label">Encapsulation</p>
+  <div class="encap">
+    <div class="encap-row"><span class="encap-lbl">Données</span><div class="encap-blocks"><div class="eb eb-data">Données</div></div></div>
+    <div class="encap-row"><span class="encap-lbl">Segment</span><div class="encap-blocks"><div class="eb eb-tcp">TCP</div><div class="eb eb-data">Données</div></div></div>
+    <div class="encap-row"><span class="encap-lbl">Paquet</span><div class="encap-blocks"><div class="eb eb-ip">IP</div><div class="eb eb-tcp">TCP</div><div class="eb eb-data">Données</div></div></div>
+    <div class="encap-row"><span class="encap-lbl">Trame</span><div class="encap-blocks"><div class="eb eb-eth">ETH</div><div class="eb eb-ip">IP</div><div class="eb eb-tcp">TCP</div><div class="eb eb-data">Données</div><div class="eb eb-fcs">FCS</div></div></div>
+    <div class="encap-row"><span class="encap-lbl">Bits</span><div class="encap-blocks"><div class="eb eb-bits">01000101 01010100 ...</div></div></div>
+  </div>
+
+  <p class="section-label">Équipements</p>
+  <div class="grid3">
+    <div class="card"><p class="card-title">Switch <span class="pill p-blue">C2</span></p><p class="card-body">Lit MAC · VLANs</p></div>
+    <div class="card"><p class="card-title">Routeur <span class="pill p-coral">C3</span></p><p class="card-body">Lit IP · tunnels IPSec</p></div>
+    <div class="card"><p class="card-title">Zscaler <span class="pill p-purple">C4→C7</span></p><p class="card-body">Ports/TLS/appli</p></div>
+  </div>
+
+  <p class="section-label">Règles clés</p>
+  <div class="grid2">
+    <div class="card"><p class="card-title">MAC vs IP</p><p class="card-body"><span class="pill p-blue">MAC</span> locale · change à chaque routeur<br><span class="pill p-coral">IP</span> globale · reste bout en bout</p></div>
+    <div class="card"><p class="card-title">IPSec = C3</p><p class="card-body">Paquet IP dans paquet IP<br><strong>[IP] [ESP] [IP original]</strong></p></div>
+  </div>
+  <div class="footer">Chapitre 1 · <a href="index.html">← Retour à l'index</a></div>
+</div>
+
+<!-- QUIZ -->
+<div class="tab-content" id="tab-quiz">
+  <h1>Quiz — Chapitre 1</h1>
+  <p class="subtitle">5 questions · Réponds librement</p>
+  <div class="quiz-progress"><div class="quiz-fill" id="qfill" style="width:0%"></div></div>
+  <div id="quiz-container"></div>
+</div>
+
+<script>
+function showTab(id,e){
+  document.querySelectorAll('.tab-content').forEach(t=>{t.classList.remove('active')});
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  e.target.classList.add('active');
+  if(id==='quiz') renderQuiz();
+}
+
+const questions=[
+  {q:"Cite les 7 couches OSI dans l'ordre (bas → haut) avec leur PDU.",hint:"Commence par Physique. PDU ≠ nom de couche.",keys:[['physique','liaison','réseau','transport','session','présentation','application'],['bits','trame','paquet','segment','données']],correct:"Parfait. 7 couches + PDU correctement associés.",partial:"Vérifie les PDU : Physique=Bits, Liaison=Trame, Réseau=Paquet, Transport=Segment, 5-6-7=Données.",wrong:"Ordre : Physique·Liaison·Réseau·Transport·Session·Présentation·Application. PDU : Bits·Trame·Paquet·Segment·Données."},
+  {q:"À quelle couche OSI opère TLS ? Et pourquoi ?",hint:"TLS chiffre et transforme le format des données.",keys:[['6','présentation'],['chiffr','format','encod']],correct:"Exact. Couche 6 — Présentation. TLS transforme le format des données (chiffrement).",partial:"Tu as la bonne idée. Précise : couche 6 (Présentation), justifiée par le rôle de chiffrement/encodage.",wrong:"TLS = couche 6 (Présentation). Son rôle est de chiffrer/déchiffrer les données — transformer leur format."},
+  {q:"Un routeur reçoit une trame. Quels en-têtes lit-il ? Que fait-il des adresses MAC ?",hint:"Un routeur = couche 3. Il ne lit que sa couche.",keys:[['ip','adresse ip'],['mac','ethernet','remplace']],correct:"Parfait. Lit l'en-tête IP (C3), ignore TCP/contenu, remplace les MAC avant de retransmettre.",partial:"Presque. Le routeur lit IP (pas TCP). Pour les MAC : il les lit puis les remplace à chaque saut.",wrong:"Routeur = C3 → lit uniquement IP. Ignore TCP et contenu. Remplace les adresses MAC à chaque saut."},
+  {q:"Quelle est la différence entre une adresse MAC et une adresse IP ? Laquelle change à chaque routeur ?",hint:"L'une est physique et locale, l'autre est logique et globale.",keys:[['mac','change','local','physique'],['ip','global','dest','finale']],correct:"Exact. MAC = physique, locale, change à chaque routeur. IP = logique, globale, reste identique bout en bout.",partial:"Tu as l'essentiel. Précise bien : c'est la MAC qui change à chaque saut, pas l'IP.",wrong:"MAC = physique, locale, change à chaque routeur ('prochain arrêt'). IP = logique, globale, reste la même ('destination finale')."},
+  {q:"IPSec opère à quelle couche ? Justifie en une phrase. Où le retrouve-t-on chez ENGIE ?",hint:"IPSec encapsule des paquets IP dans d'autres paquets IP.",keys:[['3','réseau'],['paquet','ip','tunnel','fortigate','sd-wan']],correct:"Parfait. Couche 3 — encapsule un paquet IP dans un nouveau paquet IP. Utilisé par les tunnels SD-WAN FortiGate.",partial:"Bonne couche (3). Justifie : IPSec encapsule des paquets IP → couche 3. Tunnels overlay SD-WAN FortiGate chez ENGIE.",wrong:"IPSec = couche 3. Il encapsule un paquet IP dans un nouveau paquet IP. Utilisé pour les tunnels SD-WAN FortiGate sur les sites ENGIE."}
+];
+
+let answers=new Array(questions.length).fill('');
+let checked=new Array(questions.length).fill(false);
+let scores=new Array(questions.length).fill(null);
+let rendered=false;
+
+function renderQuiz(){
+  if(rendered) return;
+  rendered=true;
+  const c=document.getElementById('quiz-container');
+  questions.forEach((q,i)=>{
+    const div=document.createElement('div');
+    div.className='card';
+    div.style.marginBottom='16px';
+    div.innerHTML=`<p class="q-num">Question ${i+1}/5</p><p class="q-text">${q.q}</p><p class="q-hint">Indice : ${q.hint}</p><textarea class="q-input" id="ans-${i}" placeholder="Ta réponse..."></textarea><button class="q-btn" onclick="check(${i})">Vérifier</button><button class="q-btn q-btn-sec" onclick="reveal(${i})">Correction</button><div class="feedback" id="fb-${i}"></div>`;
+    c.appendChild(div);
+  });
+  const sum=document.createElement('div');
+  sum.id='summary';
+  sum.style.display='none';
+  c.appendChild(sum);
+}
+
+function eval2(a,keys){
+  const t=a.toLowerCase();
+  let m=0;
+  for(const g of keys) if(g.some(k=>t.includes(k))) m++;
+  return m===keys.length?'correct':m>=1?'partial':'wrong';
+}
+
+function check(i){
+  const v=document.getElementById('ans-'+i).value.trim();
+  if(!v) return;
+  const r=eval2(v,questions[i].keys);
+  scores[i]=r; checked[i]=true;
+  const fb=document.getElementById('fb-'+i);
+  fb.className='feedback show '+r;
+  fb.innerHTML=`<strong>${{correct:'✓ Correct',partial:'~ Partiel',wrong:'✗ À revoir'}[r]}</strong> — ${questions[i][r]}`;
+  document.getElementById('qfill').style.width=(checked.filter(Boolean).length/questions.length*100)+'%';
+  if(checked.every(Boolean)) summary();
+}
+
+function reveal(i){
+  const fb=document.getElementById('fb-'+i);
+  fb.className='feedback show partial';
+  fb.innerHTML=`<strong>Correction :</strong> ${questions[i].wrong}`;
+  if(!checked[i]){checked[i]=true;scores[i]='wrong';document.getElementById('qfill').style.width=(checked.filter(Boolean).length/questions.length*100)+'%';}
+  if(checked.every(Boolean)) summary();
+}
+
+function summary(){
+  const s=document.getElementById('summary');
+  s.style.display='block';
+  const c=scores.filter(x=>x==='correct').length;
+  const p=scores.filter(x=>x==='partial').length;
+  const pct=Math.round((c+p*0.5)/questions.length*100);
+  s.innerHTML=`<div class="score-card"><div class="score-num">${pct}%</div><div class="score-label">${pct>=80?'Maîtrisé ✓':pct>=50?'En bonne voie':'À retravailler'}</div><div class="score-detail">${questions.map((q,i)=>`<div class="score-row"><span>Q${i+1} — ${q.q.substring(0,50)}...</span><span class="pill ${scores[i]==='correct'?'p-green':scores[i]==='partial'?'p-amber':'p-coral'}">${scores[i]==='correct'?'Correct':scores[i]==='partial'?'Partiel':'À revoir'}</span></div>`).join('')}</div></div>`;
+}
+</script>
+</body>
+</html>
