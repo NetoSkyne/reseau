@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapitre 2 — Adressage IP & Routage</title>
+<style>
+  @media print{.no-print{display:none!important}*{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:13px;color:#1a1a1a;background:#f7f7f5;min-height:100vh}
+  .nav{display:flex;gap:2px;padding:16px 24px 0;background:#f7f7f5;position:sticky;top:0;z-index:10;border-bottom:0.5px solid #e0e0e0;align-items:center}
+  .back{font-size:12px;color:#888;text-decoration:none;margin-right:16px;padding:8px 0}
+  .back:hover{color:#1a1a1a}
+  .nav-btn{padding:8px 18px;font-size:12px;font-weight:500;cursor:pointer;border:none;background:transparent;color:#888;border-bottom:2px solid transparent;transition:all .15s}
+  .nav-btn.active{color:#1a1a1a;border-bottom-color:#1a1a1a}
+  .nav-btn:hover{color:#1a1a1a}
+  .tab-content{display:none;padding:24px;max-width:860px;margin:0 auto}
+  .tab-content.active{display:block}
+  h1{font-size:22px;font-weight:600;margin-bottom:4px}
+  h2{font-size:16px;font-weight:600;margin:24px 0 10px}
+  h3{font-size:13px;font-weight:600;margin:16px 0 6px}
+  p{line-height:1.7;color:#444;margin-bottom:10px}
+  .subtitle{font-size:12px;color:#888;margin-bottom:24px}
+  .section-label{font-size:10px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:.08em;margin:20px 0 8px}
+  code{font-family:monospace;font-size:12px;background:#f0f0ee;padding:1px 5px;border-radius:3px}
+  .card{background:#fff;border:0.5px solid #e0e0e0;border-radius:10px;padding:14px 16px;margin-bottom:12px}
+  .card-title{font-size:13px;font-weight:600;margin-bottom:6px}
+  .card-body{font-size:12px;color:#555;line-height:1.7}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}
+  .pill{display:inline-block;font-size:10px;padding:2px 8px;border-radius:999px;font-weight:500;margin:1px}
+  .p-blue{background:#E6F1FB;color:#0C447C}
+  .p-teal{background:#E1F5EE;color:#085041}
+  .p-coral{background:#FAECE7;color:#712B13}
+  .p-amber{background:#FAEEDA;color:#633806}
+  .p-purple{background:#EEEDFE;color:#3C3489}
+  .p-green{background:#EAF3DE;color:#27500A}
+  .p-gray{background:#F1EFE8;color:#444441}
+  .callout{background:#EAF3DE;border-left:3px solid #3B6D11;border-radius:0 8px 8px 0;padding:10px 14px;margin:12px 0;font-size:12px;color:#27500A;line-height:1.6}
+  .callout-warn{background:#FAEEDA;border-left:3px solid #BA7517;border-radius:0 8px 8px 0;padding:10px 14px;margin:12px 0;font-size:12px;color:#633806;line-height:1.6}
+  .callout-engie{background:#E6F1FB;border-left:3px solid #185FA5;border-radius:0 8px 8px 0;padding:10px 14px;margin:12px 0;font-size:12px;color:#0C447C;line-height:1.6}
+  .formula{background:#f0f0ee;border-radius:8px;padding:10px 16px;font-family:monospace;font-size:12px;color:#1a1a1a;margin:10px 0;line-height:2}
+  table{width:100%;border-collapse:collapse;margin-bottom:16px}
+  th{font-size:10px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:.06em;padding:7px 8px;text-align:left;border-bottom:1.5px solid #e0e0e0;background:#fafafa}
+  td{padding:7px 8px;font-size:11px;border-bottom:0.5px solid #ebebeb;vertical-align:middle}
+  tr:last-child td{border-bottom:none}
+  .td-m{color:#555}
+  .encap{display:flex;flex-direction:column;gap:5px;margin:12px 0}
+  .encap-row{display:flex;align-items:center;gap:8px}
+  .encap-lbl{font-size:10px;color:#888;min-width:80px;text-align:right;flex-shrink:0}
+  .encap-blocks{display:flex;gap:3px;flex:1}
+  .eb{display:flex;align-items:center;justify-content:center;height:26px;border-radius:4px;font-size:10px;font-weight:600;padding:0 8px;white-space:nowrap}
+  .eb-priv{background:#FAECE7;color:#712B13;flex:1}
+  .eb-pub{background:#E1F5EE;color:#085041;flex:1}
+  .eb-port{background:#FAEEDA;color:#633806}
+  .dora{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:12px 0}
+  .dora-step{background:#fff;border:0.5px solid #e0e0e0;border-radius:8px;padding:10px;text-align:center}
+  .dora-l{font-size:22px;font-weight:600;margin-bottom:4px}
+  .dora-n{font-size:11px;font-weight:600;color:#444;margin-bottom:4px}
+  .dora-d{font-size:10px;color:#888;line-height:1.5}
+  .mnemonic{background:#f0f0ee;border-radius:8px;padding:12px 16px;font-size:13px;color:#555;line-height:2;margin:12px 0}
+  .mnemonic strong{color:#1a1a1a}
+  .print-btn{display:inline-block;padding:7px 16px;font-size:12px;cursor:pointer;border:0.5px solid #ccc;border-radius:6px;background:#fff;color:#444;margin-bottom:20px}
+  .print-btn:hover{background:#f0f0ee}
+  .footer{font-size:11px;color:#aaa;text-align:center;margin-top:24px;padding-top:16px;border-top:0.5px solid #e0e0e0}
+  .quiz-progress{height:4px;background:#e0e0e0;border-radius:2px;margin-bottom:20px;overflow:hidden}
+  .quiz-fill{height:100%;background:#378ADD;border-radius:2px;transition:width .4s}
+  .q-num{font-size:11px;color:#888;margin-bottom:6px}
+  .q-text{font-size:15px;font-weight:500;color:#1a1a1a;margin-bottom:12px;line-height:1.5}
+  .q-hint{background:#f7f7f5;border-radius:6px;padding:8px 12px;font-size:12px;color:#666;margin-bottom:16px;line-height:1.6}
+  .q-input{width:100%;border:0.5px solid #ccc;border-radius:8px;padding:10px 12px;font-size:13px;font-family:inherit;resize:vertical;min-height:80px;margin-bottom:10px;outline:none;transition:border-color .15s}
+  .q-input:focus{border-color:#378ADD}
+  .q-btn{padding:8px 20px;font-size:13px;cursor:pointer;border-radius:8px;border:0.5px solid #ccc;background:#1a1a1a;color:#fff}
+  .q-btn-sec{background:#fff;color:#1a1a1a;margin-left:8px}
+  .feedback{border-radius:8px;padding:12px 14px;margin-top:12px;font-size:12px;line-height:1.7;display:none}
+  .feedback.correct{background:#EAF3DE;color:#27500A;border:0.5px solid #97C459}
+  .feedback.partial{background:#FAEEDA;color:#633806;border:0.5px solid #EF9F27}
+  .feedback.wrong{background:#FCEBEB;color:#501313;border:0.5px solid #F09595}
+  .feedback.show{display:block}
+  .score-card{background:#fff;border:0.5px solid #e0e0e0;border-radius:10px;padding:20px;text-align:center;margin-top:16px}
+  .score-num{font-size:40px;font-weight:600}
+  .score-label{font-size:13px;color:#888;margin-top:4px}
+  .score-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:0.5px solid #ebebeb;font-size:12px}
+  .score-row:last-child{border-bottom:none}
+  .score-detail{margin-top:16px;text-align:left}
+</style>
+</head>
+<body>
+<div class="nav no-print">
+  <a href="index.html" class="back">← Index</a>
+  <button class="nav-btn active" onclick="showTab('cours',event)">Cours</button>
+  <button class="nav-btn" onclick="showTab('cheatsheet',event)">Cheat sheet</button>
+  <button class="nav-btn" onclick="showTab('quiz',event)">Quiz</button>
+</div>
+
+<!-- COURS -->
+<div class="tab-content active" id="tab-cours">
+  <h1>Chapitre 2 — Adressage IP & Routage</h1>
+  <p class="subtitle">IPv4 · Subnetting · NAT · Routage statique & dynamique · DHCP · Passerelle</p>
+  <button class="print-btn no-print" onclick="window.print()">Imprimer / PDF</button>
+
+  <h2>1. L'adresse IP</h2>
+  <p>Une adresse IPv4 est un nombre de 32 bits écrit en 4 octets séparés par des points. Chaque octet va de 0 à 255. Elle identifie de façon unique une machine sur un réseau.</p>
+  <div class="formula">Structure : 192.168.1.10<br>Bits : 11000000.10101000.00000001.00001010<br>Taille : 32 bits = 4 octets</div>
+
+  <h2>2. Subnetting & CIDR</h2>
+  <p>CIDR (<em>Classless Inter-Domain Routing</em>) est la notation avec le slash. <code>/24</code> = 24 bits réseau, 8 bits machines.</p>
+  <div class="formula">Adresses totales     = 2^(32 - CIDR)<br>Machines utilisables = 2^(32 - CIDR) - 2<br>(adresse réseau .0 + broadcast .255 réservées)</div>
+  <table>
+    <thead><tr><th>CIDR</th><th>Machines</th><th>Usage typique</th></tr></thead>
+    <tbody>
+      <tr><td>/16</td><td class="td-m">65 534</td><td class="td-m">Entité régionale (ENGIE Roumanie)</td></tr>
+      <tr><td>/24</td><td class="td-m">254</td><td class="td-m">LAN bureautique d'un site</td></tr>
+      <tr><td>/26</td><td class="td-m">62</td><td class="td-m">Sous-segment IT</td></tr>
+      <tr><td>/28</td><td class="td-m">14</td><td class="td-m">Segment OT isolé</td></tr>
+      <tr><td>/30</td><td class="td-m">2</td><td class="td-m">Lien point-à-point entre routeurs</td></tr>
+      <tr><td>/32</td><td class="td-m">0</td><td class="td-m">Adresse unique (loopback)</td></tr>
+    </tbody>
+  </table>
+  <div class="callout-warn">Deux adresses toujours réservées : <code>.0</code> = adresse réseau, dernière adresse = broadcast. Ce ne sont pas des "adresses vides".</div>
+
+  <h3>Décomposition d'un réseau</h3>
+  <div class="formula">Plan global ENGIE     10.0.0.0/8<br>└── Roumanie          10.50.0.0/16<br>      └── Site Aricesti  10.50.4.0/24<br>            ├── LAN IT   10.50.4.0/26   (62 machines)<br>            ├── LAN OT   10.50.4.64/28  (14 machines)<br>            └── WAN link 10.50.4.96/30  (2 machines)<br>└── Italie            10.51.0.0/16<br>└── Malaisie          10.52.0.0/16</div>
+  <div class="callout-engie">Chaque entité ENGIE a une plage distincte. Si deux entités partagent la même plage et sont interconnectées via SD-WAN, les routeurs ne savent plus où envoyer les paquets.</div>
+
+  <h3>Adresses privées vs publiques</h3>
+  <div class="grid2">
+    <div class="card"><p class="card-title">Privées — non routables</p><p class="card-body"><code>10.0.0.0/8</code><br><code>172.16.0.0/12</code><br><code>192.168.0.0/16</code></p></div>
+    <div class="card"><p class="card-title">Publiques — routables</p><p class="card-body">Uniques sur internet. Attribuées par les opérateurs.<br><br>Ex : <code>203.0.113.1</code>, <code>8.8.8.8</code></p></div>
+  </div>
+
+  <h2>3. Le NAT / PAT</h2>
+  <p>NAT traduit les adresses privées en adresses publiques au niveau du routeur. En pratique c'est du PAT — plusieurs machines partagent une seule IP publique grâce aux ports.</p>
+  <div class="encap">
+    <div class="encap-row"><span class="encap-lbl">Avant NAT</span><div class="encap-blocks"><div class="eb eb-priv">src: 10.50.4.10</div><div class="eb eb-port">:54231</div><div class="eb eb-priv">dst: 8.8.8.8</div></div></div>
+    <div class="encap-row"><span class="encap-lbl">Après NAT</span><div class="encap-blocks"><div class="eb eb-pub">src: 203.0.113.1</div><div class="eb eb-port">:54231</div><div class="eb eb-pub">dst: 8.8.8.8</div></div></div>
+  </div>
+  <div class="callout">Le port = "ticket de vestiaire". Après translation, toutes les machines ont la même IP publique. Le port permet au routeur de savoir à qui retourner chaque réponse.</div>
+
+  <h2>4. La passerelle</h2>
+  <p>L'adresse IP du routeur sur le réseau local — la porte de sortie du subnet. Quand la destination est hors du subnet, le PC envoie à sa passerelle qui s'occupe du reste.</p>
+  <div class="formula">PC vérifie : "la destination est-elle dans mon subnet ?"<br>Oui → envoi direct<br>Non → envoi à la passerelle (routeur)</div>
+  <div class="callout-engie">Le FortiGate joue 3 rôles simultanément : passerelle (porte de sortie LAN) + routeur (décide du chemin) + NAT (traduit vers internet). Souvent la même IP : <code>10.50.4.1</code>.</div>
+
+  <h2>5. Le DHCP</h2>
+  <p>Attribue automatiquement les 4 informations nécessaires à chaque machine : adresse IP, masque, passerelle, DNS.</p>
+  <h3>Les 4 étapes — DORA</h3>
+  <div class="dora">
+    <div class="dora-step"><div class="dora-l" style="color:#185FA5">D</div><div class="dora-n">Discover</div><div class="dora-d">Broadcast : "Y a-t-il un serveur DHCP ?" src: 0.0.0.0</div></div>
+    <div class="dora-step"><div class="dora-l" style="color:#0F6E56">O</div><div class="dora-n">Offer</div><div class="dora-d">Serveur propose IP + masque + passerelle + DNS + bail</div></div>
+    <div class="dora-step"><div class="dora-l" style="color:#BA7517">R</div><div class="dora-n">Request</div><div class="dora-d">Machine accepte l'offre (broadcast)</div></div>
+    <div class="dora-step"><div class="dora-l" style="color:#A32D2D">A</div><div class="dora-n">Acknowledge</div><div class="dora-d">Serveur confirme + enregistre le bail</div></div>
+  </div>
+  <div class="callout-warn">R = <strong>Request</strong>, pas "Reply". Erreur fréquente.</div>
+  <div class="card" style="margin-top:8px"><p class="card-title">Réservation DHCP</p><p class="card-body">Lie une adresse MAC à une IP fixe. L'équipement reçoit toujours la même IP automatiquement — sans config manuelle. Utilisé pour les imprimantes, serveurs, caméras.</p></div>
+
+  <h2>6. Le routage</h2>
+  <p>Un routeur consulte sa table de routage et applique toujours la règle la plus précise — règle du plus long préfixe.</p>
+  <div class="grid3">
+    <div class="card"><p class="card-title">Connectée <span class="pill p-green">Auto</span></p><p class="card-body">Créée automatiquement quand une interface a une IP.</p></div>
+    <div class="card"><p class="card-title">Statique <span class="pill p-blue">Manuelle</span></p><p class="card-body">Configurée par l'admin. Simple mais pas résilient.</p></div>
+    <div class="card"><p class="card-title">Défaut <span class="pill p-gray">0.0.0.0/0</span></p><p class="card-body">Tout ce qui est inconnu → envoyer par là.</p></div>
+  </div>
+  <div class="callout-warn">La route par défaut <code>0.0.0.0/0</code> et BGP sont deux choses distinctes. La route par défaut est une destination. BGP est un mécanisme qui peut la distribuer.</div>
+
+  <h3>OSPF vs BGP</h3>
+  <div class="grid2">
+    <div class="card"><p class="card-title">OSPF <span class="pill p-blue">Intra-réseau</span></p><p class="card-body">Partage une carte complète. Chemin le plus court (Dijkstra). Convergence en secondes si panne.<br><br>Usage : datacenter, campus, réseau interne.<br><br><em>Analogie : groupe WhatsApp — tout le monde partage tout.</em></p></div>
+    <div class="card"><p class="card-title">BGP <span class="pill p-purple">Inter-réseaux</span></p><p class="card-body">Annonces de routes uniquement. Scalable (~900k routes internet). Convergence en minutes.<br><br>Usage : internet, SD-WAN multi-sites, opérateur.<br><br><em>Analogie : diplomatie — chaque pays annonce ce qu'il veut partager.</em></p></div>
+  </div>
+  <table>
+    <thead><tr><th></th><th>OSPF</th><th>BGP</th></tr></thead>
+    <tbody>
+      <tr><td>Partage</td><td class="td-m">Carte complète</td><td class="td-m">Annonces de routes</td></tr>
+      <tr><td>Optimise</td><td class="td-m">Chemin le plus court</td><td class="td-m">Chemin le plus politique</td></tr>
+      <tr><td>Convergence</td><td class="td-m">Secondes</td><td class="td-m">Minutes</td></tr>
+      <tr><td>Échelle</td><td class="td-m">Petite à moyenne</td><td class="td-m">Illimitée</td></tr>
+      <tr><td>Usage ENGIE</td><td class="td-m">Hub, datacenter</td><td class="td-m">SD-WAN 400+ sites</td></tr>
+    </tbody>
+  </table>
+  <div class="callout-engie">Chez ENGIE, BGP distribue automatiquement les routes SD-WAN : chaque FortiGate annonce sa plage locale, le hub central les redistribue à tous les sites.</div>
+  <div class="footer">Chapitre 2 · <a href="index.html">← Retour à l'index</a> · Prochain : Chapitre 3 — Switching & LAN</div>
+</div>
+
+<!-- CHEAT SHEET -->
+<div class="tab-content" id="tab-cheatsheet">
+  <h1>Cheat Sheet — Chapitre 2</h1>
+  <p class="subtitle">Adressage IP & Routage · Référence rapide</p>
+  <button class="print-btn no-print" onclick="window.print()">Imprimer / PDF</button>
+
+  <p class="section-label">Formules</p>
+  <div class="formula">Adresses totales     = 2^(32 - CIDR)<br>Machines utilisables = 2^(32 - CIDR) - 2<br>Subnets possibles    = 2^(bits empruntés)</div>
+
+  <p class="section-label">Tailles de subnets</p>
+  <table>
+    <thead><tr><th>CIDR</th><th>Machines</th><th>Usage</th></tr></thead>
+    <tbody>
+      <tr><td>/24</td><td>254</td><td class="td-m">LAN bureautique</td></tr>
+      <tr><td>/26</td><td>62</td><td class="td-m">Sous-segment IT</td></tr>
+      <tr><td>/28</td><td>14</td><td class="td-m">Segment OT</td></tr>
+      <tr><td>/30</td><td>2</td><td class="td-m">Lien point-à-point</td></tr>
+      <tr><td>/32</td><td>0</td><td class="td-m">Adresse unique</td></tr>
+    </tbody>
+  </table>
+
+  <p class="section-label">NAT / PAT</p>
+  <div class="card"><p class="card-body">IP privée → IP publique au niveau du routeur<br>Port = ticket de vestiaire pour identifier chaque machine au retour<br><code>10.50.4.10:54231 → 203.0.113.1:54231</code></p></div>
+
+  <p class="section-label">DORA</p>
+  <div class="dora">
+    <div class="dora-step"><div class="dora-l" style="color:#185FA5">D</div><div class="dora-n">Discover</div><div class="dora-d">Broadcast — cherche DHCP</div></div>
+    <div class="dora-step"><div class="dora-l" style="color:#0F6E56">O</div><div class="dora-n">Offer</div><div class="dora-d">Propose IP + config</div></div>
+    <div class="dora-step"><div class="dora-l" style="color:#BA7517">R</div><div class="dora-n">Request</div><div class="dora-d">Accepte l'offre</div></div>
+    <div class="dora-step"><div class="dora-l" style="color:#A32D2D">A</div><div class="dora-n">Acknowledge</div><div class="dora-d">Confirme le bail</div></div>
+  </div>
+
+  <p class="section-label">Types de routes</p>
+  <div class="grid3">
+    <div class="card"><p class="card-title">Connectée</p><p class="card-body">Auto — interface avec IP</p></div>
+    <div class="card"><p class="card-title">Statique</p><p class="card-body">Manuelle — simple, pas résilient</p></div>
+    <div class="card"><p class="card-title">Défaut</p><p class="card-body"><code>0.0.0.0/0</code> — tout le reste</p></div>
+  </div>
+
+  <p class="section-label">OSPF vs BGP</p>
+  <div class="grid2">
+    <div class="card"><p class="card-title">OSPF <span class="pill p-blue">Intra</span></p><p class="card-body">Carte complète · Dijkstra · secondes · datacenter / campus</p></div>
+    <div class="card"><p class="card-title">BGP <span class="pill p-purple">Inter</span></p><p class="card-body">Annonces · scalable · minutes · SD-WAN / internet</p></div>
+  </div>
+
+  <p class="section-label">Passerelle</p>
+  <div class="card"><p class="card-body">IP du routeur sur le LAN · porte de sortie du subnet<br>Destination hors subnet → envoie à la passerelle<br>Même équipement que routeur + NAT (FortiGate)</p></div>
+  <div class="footer">Chapitre 2 · <a href="index.html">← Retour à l'index</a></div>
+</div>
+
+<!-- QUIZ -->
+<div class="tab-content" id="tab-quiz">
+  <h1>Quiz — Chapitre 2</h1>
+  <p class="subtitle">6 questions · Réponds librement</p>
+  <div class="quiz-progress"><div class="quiz-fill" id="qfill" style="width:0%"></div></div>
+  <div id="quiz-container"></div>
+</div>
+
+<script>
+function showTab(id,e){
+  document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  e.target.classList.add('active');
+  if(id==='quiz') renderQuiz();
+}
+
+const questions=[
+  {q:"Combien de machines sur un /26 ? Broadcast si réseau = 10.50.4.0 ?",hint:"2^(32-26)-2. Broadcast = dernière adresse.",keys:[['62'],['63','10.50.4.63']],correct:"Parfait. 6 bits hôtes → 64-2=62 machines. Broadcast=10.50.4.63.",partial:"62 machines OK. Broadcast = 10.50.4.63 (10.50.4.0 + 63).",wrong:"/26 → 6 bits hôtes → 2^6=64 → 64-2=62 machines. Broadcast=10.50.4.63."},
+  {q:"Pourquoi deux entités ENGIE ne peuvent-elles pas avoir la même plage IP si interconnectées via SD-WAN ?",hint:"Table de routage du hub central.",keys:[['routage','route','conflit','chevauchement'],['sait pas','ambig','identiq','même']],correct:"Exact. Deux routes identiques dans la table → le hub ne sait plus vers quelle entité envoyer.",partial:"Bonne idée. Précise : deux routes identiques dans la table de routage = ambiguïté, le routeur ne peut pas décider.",wrong:"Si Roumanie et Italie ont la même plage, le hub a deux routes identiques. Il ne sait pas vers laquelle envoyer le trafic."},
+  {q:"Pourquoi le port est-il indispensable dans le NAT quand plusieurs machines partagent une IP publique ?",hint:"Que se passe-t-il quand la réponse revient ?",keys:[['port','ticket','différenci'],['retour','réponse','identifi']],correct:"Parfait. Après NAT toutes les machines ont la même IP publique. Le port identifie la machine d'origine au retour.",partial:"Tu as l'idée. Le point clé : après NAT même IP publique pour tous → le port est le seul identifiant au retour.",wrong:"Après NAT, 10.50.4.10 et 10.50.4.11 ont toutes deux 203.0.113.1. Le port est le seul moyen de savoir à qui retourner la réponse."},
+  {q:"Cite les 4 étapes DHCP dans l'ordre avec leur acronyme.",hint:"DORA. R = Request, pas Reply.",keys:[['discover','offer','request','acknowledge'],['dora']],correct:"Parfait. DORA : Discover → Offer → Request → Acknowledge.",partial:"L'ordre est là. Vérifie : R = Request (pas Reply). Acronyme = DORA.",wrong:"DORA : Discover (broadcast du PC) → Offer (serveur propose) → Request (PC accepte) → Acknowledge (serveur confirme)."},
+  {q:"Quelle est la différence fondamentale entre OSPF et BGP ? Un cas d'usage ENGIE pour chacun.",hint:"L'un partage une carte, l'autre des annonces.",keys:[['ospf','interne','carte','datacenter'],['bgp','inter','annonce','sd-wan','opérateur']],correct:"Parfait. OSPF : carte complète, interne (datacenter). BGP : annonces de routes, inter-réseaux (SD-WAN 400 sites).",partial:"Tu as la distinction. Ajoute les cas ENGIE : OSPF pour le hub interne, BGP pour distribuer les routes SD-WAN.",wrong:"OSPF : carte complète, interne, secondes de convergence → datacenter ENGIE. BGP : annonces de routes, inter-réseaux, minutes → SD-WAN 400+ sites."},
+  {q:"Qu'est-ce que la passerelle ? Quand un PC l'utilise-t-il ? Quel équipement joue ce rôle chez ENGIE ?",hint:"Porte de sortie du subnet. Même équipement que le routeur.",keys:[['passerelle','routeur','porte','sortie'],['subnet','réseau','hors','fortigate']],correct:"Exact. La passerelle = IP du routeur sur le LAN. Utilisée quand destination hors subnet. FortiGate chez ENGIE.",partial:"Bonne direction. Précise : passerelle = IP du routeur sur le LAN local. FortiGate joue ce rôle chez ENGIE.",wrong:"Passerelle = IP du routeur sur le réseau local. Le PC l'utilise quand la destination est hors de son subnet. C'est le FortiGate chez ENGIE."}
+];
+
+let checked=new Array(questions.length).fill(false);
+let scores=new Array(questions.length).fill(null);
+let rendered=false;
+
+function renderQuiz(){
+  if(rendered) return;
+  rendered=true;
+  const c=document.getElementById('quiz-container');
+  questions.forEach((q,i)=>{
+    const div=document.createElement('div');
+    div.className='card';
+    div.style.marginBottom='16px';
+    div.innerHTML=`<p class="q-num">Question ${i+1}/${questions.length}</p><p class="q-text">${q.q}</p><p class="q-hint">Indice : ${q.hint}</p><textarea class="q-input" id="ans-${i}" placeholder="Ta réponse..."></textarea><button class="q-btn" onclick="check(${i})">Vérifier</button><button class="q-btn q-btn-sec" onclick="reveal(${i})">Correction</button><div class="feedback" id="fb-${i}"></div>`;
+    c.appendChild(div);
+  });
+  const sum=document.createElement('div');
+  sum.id='summary';sum.style.display='none';
+  c.appendChild(sum);
+}
+
+function ev(a,keys){
+  const t=a.toLowerCase();
+  let m=0;
+  for(const g of keys) if(g.some(k=>t.includes(k))) m++;
+  return m===keys.length?'correct':m>=1?'partial':'wrong';
+}
+
+function check(i){
+  const v=document.getElementById('ans-'+i).value.trim();
+  if(!v) return;
+  const r=ev(v,questions[i].keys);
+  scores[i]=r;checked[i]=true;
+  const fb=document.getElementById('fb-'+i);
+  fb.className='feedback show '+r;
+  fb.innerHTML=`<strong>${{correct:'✓ Correct',partial:'~ Partiel',wrong:'✗ À revoir'}[r]}</strong> — ${questions[i][r]}`;
+  document.getElementById('qfill').style.width=(checked.filter(Boolean).length/questions.length*100)+'%';
+  if(checked.every(Boolean)) summary();
+}
+
+function reveal(i){
+  const fb=document.getElementById('fb-'+i);
+  fb.className='feedback show partial';
+  fb.innerHTML=`<strong>Correction :</strong> ${questions[i].wrong}`;
+  if(!checked[i]){checked[i]=true;scores[i]='wrong';document.getElementById('qfill').style.width=(checked.filter(Boolean).length/questions.length*100)+'%';}
+  if(checked.every(Boolean)) summary();
+}
+
+function summary(){
+  const s=document.getElementById('summary');
+  s.style.display='block';
+  const c=scores.filter(x=>x==='correct').length;
+  const p=scores.filter(x=>x==='partial').length;
+  const pct=Math.round((c+p*0.5)/questions.length*100);
+  s.innerHTML=`<div class="score-card"><div class="score-num">${pct}%</div><div class="score-label">${pct>=80?'Maîtrisé ✓':pct>=50?'En bonne voie':'À retravailler'}</div><div class="score-detail">${questions.map((q,i)=>`<div class="score-row"><span>Q${i+1} — ${q.q.substring(0,50)}...</span><span class="pill ${scores[i]==='correct'?'p-green':scores[i]==='partial'?'p-amber':'p-coral'}">${scores[i]==='correct'?'Correct':scores[i]==='partial'?'Partiel':'À revoir'}</span></div>`).join('')}</div></div>`;
+}
+</script>
+</body>
+</html>
