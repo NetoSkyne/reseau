@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Formation Réseau MNOT</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:13px;color:#1a1a1a;background:#f7f7f5;min-height:100vh;padding:32px 24px;max-width:720px;margin:0 auto}
+  .header{margin-bottom:32px}
+  .header h1{font-size:22px;font-weight:600;margin-bottom:4px}
+  .header p{font-size:12px;color:#888}
+  .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:32px}
+  .stat{background:#fff;border:0.5px solid #e0e0e0;border-radius:10px;padding:14px;text-align:center}
+  .stat-num{font-size:28px;font-weight:600;color:#1a1a1a}
+  .stat-label{font-size:11px;color:#888;margin-top:2px}
+  .phase{margin-bottom:28px}
+  .phase-label{font-size:10px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px}
+  .chapter{background:#fff;border:0.5px solid #e0e0e0;border-radius:10px;padding:14px 16px;margin-bottom:8px;display:flex;align-items:center;gap:14px;text-decoration:none;color:inherit;transition:border-color .15s}
+  .chapter:hover{border-color:#888}
+  .chapter.done{border-left:3px solid #3B6D11}
+  .chapter.current{border-left:3px solid #378ADD}
+  .chapter.todo{border-left:3px solid #e0e0e0;opacity:.6;pointer-events:none}
+  .chap-num{font-size:11px;font-weight:600;color:#aaa;min-width:24px}
+  .chap-info{flex:1}
+  .chap-name{font-size:13px;font-weight:500;color:#1a1a1a;margin-bottom:2px}
+  .chap-topics{font-size:11px;color:#888;line-height:1.5}
+  .chap-meta{text-align:right;flex-shrink:0}
+  .badge{display:inline-block;font-size:10px;padding:3px 9px;border-radius:999px;font-weight:500}
+  .b-done{background:#EAF3DE;color:#27500A}
+  .b-current{background:#E6F1FB;color:#0C447C}
+  .b-todo{background:#F1EFE8;color:#5F5E5A}
+  .chap-score{font-size:12px;font-weight:600;color:#1a1a1a;margin-top:4px}
+  .chap-date{font-size:10px;color:#aaa;margin-top:2px}
+  .progress-wrap{margin-bottom:32px}
+  .progress-label{display:flex;justify-content:space-between;font-size:12px;color:#888;margin-bottom:6px}
+  .progress-bar{height:6px;background:#e0e0e0;border-radius:3px;overflow:hidden}
+  .progress-fill{height:100%;background:#3B6D11;border-radius:3px;width:22%}
+  .legend{display:flex;gap:16px;margin-top:16px;flex-wrap:wrap}
+  .legend-item{display:flex;align-items:center;gap:6px;font-size:11px;color:#888}
+  .legend-dot{width:10px;height:10px;border-radius:2px}
+  .arrow{font-size:12px;color:#aaa;margin-left:4px}
+  .footer{font-size:11px;color:#aaa;text-align:center;margin-top:32px;padding-top:16px;border-top:0.5px solid #e0e0e0}
+</style>
+</head>
+<body>
+<div class="header">
+  <h1>Formation Réseau MNOT</h1>
+  <p>Programme personnel · 9 chapitres · du fondamental au SASE/SD-WAN</p>
+</div>
+
+<div class="stats">
+  <div class="stat"><div class="stat-num">2</div><div class="stat-label">Chapitres terminés</div></div>
+  <div class="stat"><div class="stat-num">7</div><div class="stat-label">Chapitres restants</div></div>
+  <div class="stat"><div class="stat-num">22%</div><div class="stat-label">Progression</div></div>
+</div>
+
+<div class="progress-wrap">
+  <div class="progress-label"><span>Progression globale</span><span>2 / 9 chapitres</span></div>
+  <div class="progress-bar"><div class="progress-fill"></div></div>
+  <div class="legend">
+    <div class="legend-item"><div class="legend-dot" style="background:#3B6D11"></div>Terminé — cliquable</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#378ADD"></div>Prochain</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#e0e0e0"></div>À venir</div>
+  </div>
+</div>
+
+<div class="phase">
+  <p class="phase-label">Socle fondamental</p>
+  <a href="chapitre-1.html" class="chapter done">
+    <span class="chap-num">01</span>
+    <div class="chap-info"><p class="chap-name">Modèles OSI & TCP/IP</p><p class="chap-topics">7 couches · PDU · Encapsulation · Équipements réseau</p></div>
+    <div class="chap-meta"><span class="badge b-done">Terminé</span><p class="chap-score">Quiz : 80%</p><p class="chap-date">Avril 2026</p></div>
+    <span class="arrow">→</span>
+  </a>
+  <a href="chapitre-2.html" class="chapter done">
+    <span class="chap-num">02</span>
+    <div class="chap-info"><p class="chap-name">Adressage IP & Routage</p><p class="chap-topics">IPv4 · CIDR · NAT/PAT · OSPF · BGP · DHCP · Passerelle</p></div>
+    <div class="chap-meta"><span class="badge b-done">Terminé</span><p class="chap-score">Quiz : 85%</p><p class="chap-date">Avril 2026</p></div>
+    <span class="arrow">→</span>
+  </a>
+  <div class="chapter current">
+    <span class="chap-num">03</span>
+    <div class="chap-info"><p class="chap-name">Switching & LAN</p><p class="chap-topics">VLANs · STP · Agrégation de liens · 802.1Q · Segmentation IT/OT</p></div>
+    <div class="chap-meta"><span class="badge b-current">Prochain</span><p class="chap-score">~35 min</p></div>
+  </div>
+  <div class="chapter todo">
+    <span class="chap-num">04</span>
+    <div class="chap-info"><p class="chap-name">Sécurité réseau</p><p class="chap-topics">Firewall · VPN · IPSec · SSL/TLS · NAC</p></div>
+    <div class="chap-meta"><span class="badge b-todo">À venir</span><p class="chap-score">~50 min</p></div>
+  </div>
+</div>
+
+<div class="phase">
+  <p class="phase-label">Infrastructure avancée</p>
+  <div class="chapter todo">
+    <span class="chap-num">05</span>
+    <div class="chap-info"><p class="chap-name">WAN & Connectivité</p><p class="chap-topics">MPLS · Internet · GRE · Tunnels · Liens WAN</p></div>
+    <div class="chap-meta"><span class="badge b-todo">À venir</span><p class="chap-score">~35 min</p></div>
+  </div>
+  <div class="chapter todo">
+    <span class="chap-num">06</span>
+    <div class="chap-info"><p class="chap-name">Cloud & Virtualisation</p><p class="chap-topics">AWS · Azure · VPC · Peering · Réseau cloud</p></div>
+    <div class="chap-meta"><span class="badge b-todo">À venir</span><p class="chap-score">~35 min</p></div>
+  </div>
+  <div class="chapter todo">
+    <span class="chap-num">07</span>
+    <div class="chap-info"><p class="chap-name">OT & Réseaux industriels</p><p class="chap-topics">SCADA · Modèle Purdue · Segmentation IT/OT · Protocoles industriels</p></div>
+    <div class="chap-meta"><span class="badge b-todo">À venir</span><p class="chap-score">~45 min</p></div>
+  </div>
+</div>
+
+<div class="phase">
+  <p class="phase-label">Transformation réseau</p>
+  <div class="chapter todo">
+    <span class="chap-num">08</span>
+    <div class="chap-info"><p class="chap-name">SD-WAN</p><p class="chap-topics">Overlay · Underlay · Orchestration · FortiGate · Tunnels</p></div>
+    <div class="chap-meta"><span class="badge b-todo">À venir</span><p class="chap-score">~35 min</p></div>
+  </div>
+  <div class="chapter todo">
+    <span class="chap-num">09</span>
+    <div class="chap-info"><p class="chap-name">SASE & Zero Trust</p><p class="chap-topics">Zscaler · ZTNA · SWG · CASB · Identité · Architecture SASE</p></div>
+    <div class="chap-meta"><span class="badge b-todo">À venir</span><p class="chap-score">~45 min</p></div>
+  </div>
+</div>
+
+<p class="footer">Formation réseau MNOT · Mis à jour : Avril 2026</p>
+</body>
+</html>
