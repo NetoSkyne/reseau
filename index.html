@@ -35,7 +35,7 @@
   .progress-wrap{margin-bottom:32px}
   .progress-label{display:flex;justify-content:space-between;font-size:12px;color:#888;margin-bottom:6px}
   .progress-bar{height:6px;background:#e0e0e0;border-radius:3px;overflow:hidden}
-  .progress-fill{height:100%;background:#3B6D11;border-radius:3px;width:22%}
+  .progress-fill{height:100%;background:#3B6D11;border-radius:3px;width:33%}
   .legend{display:flex;gap:16px;margin-top:16px;flex-wrap:wrap}
   .legend-item{display:flex;align-items:center;gap:6px;font-size:11px;color:#888}
   .legend-dot{width:10px;height:10px;border-radius:2px}
@@ -50,9 +50,9 @@
 </div>
 
 <div class="stats">
-  <div class="stat"><div class="stat-num">2</div><div class="stat-label">Chapitres terminés</div></div>
-  <div class="stat"><div class="stat-num">7</div><div class="stat-label">Chapitres restants</div></div>
-  <div class="stat"><div class="stat-num">22%</div><div class="stat-label">Progression</div></div>
+  <div class="stat">  <div class="stat-num">3</div><div class="stat-label">Chapitres terminés</div></div>
+  <div class="stat">  <div class="stat-num">6</div><div class="stat-label">Chapitres restants</div></div>
+  <div class="stat">  <div class="stat-num">33%</div><div class="stat-label">Progression</div></div>
 </div>
 
 <div class="progress-wrap">
@@ -79,10 +79,16 @@
     <div class="chap-meta"><span class="badge b-done">Terminé</span><p class="chap-score">Quiz : 85%</p><p class="chap-date">Avril 2026</p></div>
     <span class="arrow">→</span>
   </a>
-  <div class="chapter current">
+  <a href="chapitre-3.html" class="chapter done">
     <span class="chap-num">03</span>
-    <div class="chap-info"><p class="chap-name">Switching & LAN</p><p class="chap-topics">VLANs · STP · Agrégation de liens · 802.1Q · Segmentation IT/OT</p></div>
-    <div class="chap-meta"><span class="badge b-current">Prochain</span><p class="chap-score">~35 min</p></div>
+    <div class="chap-info"><p class="chap-name">Switching & LAN</p><p class="chap-topics">VLANs · STP/RSTP · LACP · 802.1Q · Segmentation réseau</p></div>
+    <div class="chap-meta"><span class="badge b-done">Terminé</span><p class="chap-score">Quiz : 100%</p><p class="chap-date">Avril 2026</p></div>
+    <span class="arrow">→</span>
+  </a>
+  <div class="chapter current">
+    <span class="chap-num">04</span>
+    <div class="chap-info"><p class="chap-name">Sécurité réseau</p><p class="chap-topics">Firewall · VPN · IPSec · SSL/TLS · NAC</p></div>
+    <div class="chap-meta"><span class="badge b-current">Prochain</span><p class="chap-score">~50 min</p></div>
   </div>
   <div class="chapter todo">
     <span class="chap-num">04</span>
