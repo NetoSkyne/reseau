@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapitre 3 — Switching & LAN</title>
+<style>
+  @media print{.no-print{display:none!important}*{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:13px;color:#1a1a1a;background:#f7f7f5;min-height:100vh}
+  .nav{display:flex;gap:2px;padding:16px 24px 0;background:#f7f7f5;position:sticky;top:0;z-index:10;border-bottom:0.5px solid #e0e0e0;align-items:center}
+  .back{font-size:12px;color:#888;text-decoration:none;margin-right:16px;padding:8px 0}
+  .back:hover{color:#1a1a1a}
+  .nav-btn{padding:8px 18px;font-size:12px;font-weight:500;cursor:pointer;border:none;background:transparent;color:#888;border-bottom:2px solid transparent;transition:all .15s}
+  .nav-btn.active{color:#1a1a1a;border-bottom-color:#1a1a1a}
+  .nav-btn:hover{color:#1a1a1a}
+  .tab-content{display:none;padding:24px;max-width:860px;margin:0 auto}
+  .tab-content.active{display:block}
+  h1{font-size:22px;font-weight:600;margin-bottom:4px}
+  h2{font-size:16px;font-weight:600;margin:24px 0 10px}
+  h3{font-size:13px;font-weight:600;margin:16px 0 6px}
+  p{line-height:1.7;color:#444;margin-bottom:10px}
+  .subtitle{font-size:12px;color:#888;margin-bottom:24px}
+  .section-label{font-size:10px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:.08em;margin:20px 0 8px}
+  code{font-family:monospace;font-size:12px;background:#f0f0ee;padding:1px 5px;border-radius:3px}
+  .card{background:#fff;border:0.5px solid #e0e0e0;border-radius:10px;padding:14px 16px;margin-bottom:12px}
+  .card-title{font-size:13px;font-weight:600;margin-bottom:6px}
+  .card-body{font-size:12px;color:#555;line-height:1.7}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}
+  .pill{display:inline-block;font-size:10px;padding:2px 8px;border-radius:999px;font-weight:500;margin:1px}
+  .p-blue{background:#E6F1FB;color:#0C447C}
+  .p-teal{background:#E1F5EE;color:#085041}
+  .p-coral{background:#FAECE7;color:#712B13}
+  .p-amber{background:#FAEEDA;color:#633806}
+  .p-purple{background:#EEEDFE;color:#3C3489}
+  .p-green{background:#EAF3DE;color:#27500A}
+  .p-gray{background:#F1EFE8;color:#444441}
+  .callout{background:#EAF3DE;border-left:3px solid #3B6D11;border-radius:0 8px 8px 0;padding:10px 14px;margin:12px 0;font-size:12px;color:#27500A;line-height:1.6}
+  .callout-warn{background:#FAEEDA;border-left:3px solid #BA7517;border-radius:0 8px 8px 0;padding:10px 14px;margin:12px 0;font-size:12px;color:#633806;line-height:1.6}
+  .callout-engie{background:#E6F1FB;border-left:3px solid #185FA5;border-radius:0 8px 8px 0;padding:10px 14px;margin:12px 0;font-size:12px;color:#0C447C;line-height:1.6}
+  .formula{background:#f0f0ee;border-radius:8px;padding:10px 16px;font-family:monospace;font-size:12px;color:#1a1a1a;margin:10px 0;line-height:2}
+  table{width:100%;border-collapse:collapse;margin-bottom:16px}
+  th{font-size:10px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:.06em;padding:7px 8px;text-align:left;border-bottom:1.5px solid #e0e0e0;background:#fafafa}
+  td{padding:7px 8px;font-size:11px;border-bottom:0.5px solid #ebebeb;vertical-align:middle}
+  tr:last-child td{border-bottom:none}
+  .td-m{color:#555}
+  .print-btn{display:inline-block;padding:7px 16px;font-size:12px;cursor:pointer;border:0.5px solid #ccc;border-radius:6px;background:#fff;color:#444;margin-bottom:20px}
+  .print-btn:hover{background:#f0f0ee}
+  .footer{font-size:11px;color:#aaa;text-align:center;margin-top:24px;padding-top:16px;border-top:0.5px solid #e0e0e0}
+  .quiz-progress{height:4px;background:#e0e0e0;border-radius:2px;margin-bottom:20px;overflow:hidden}
+  .quiz-fill{height:100%;background:#378ADD;border-radius:2px;transition:width .4s}
+  .q-num{font-size:11px;color:#888;margin-bottom:6px}
+  .q-text{font-size:15px;font-weight:500;color:#1a1a1a;margin-bottom:12px;line-height:1.5}
+  .q-hint{background:#f7f7f5;border-radius:6px;padding:8px 12px;font-size:12px;color:#666;margin-bottom:16px;line-height:1.6}
+  .q-input{width:100%;border:0.5px solid #ccc;border-radius:8px;padding:10px 12px;font-size:13px;font-family:inherit;resize:vertical;min-height:80px;margin-bottom:10px;outline:none;transition:border-color .15s}
+  .q-input:focus{border-color:#378ADD}
+  .q-btn{padding:8px 20px;font-size:13px;cursor:pointer;border-radius:8px;border:0.5px solid #ccc;background:#1a1a1a;color:#fff}
+  .q-btn-sec{background:#fff;color:#1a1a1a;margin-left:8px}
+  .feedback{border-radius:8px;padding:12px 14px;margin-top:12px;font-size:12px;line-height:1.7;display:none}
+  .feedback.correct{background:#EAF3DE;color:#27500A;border:0.5px solid #97C459}
+  .feedback.partial{background:#FAEEDA;color:#633806;border:0.5px solid #EF9F27}
+  .feedback.wrong{background:#FCEBEB;color:#501313;border:0.5px solid #F09595}
+  .feedback.show{display:block}
+  .score-card{background:#fff;border:0.5px solid #e0e0e0;border-radius:10px;padding:20px;text-align:center;margin-top:16px}
+  .score-num{font-size:40px;font-weight:600}
+  .score-label{font-size:13px;color:#888;margin-top:4px}
+  .score-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:0.5px solid #ebebeb;font-size:12px}
+  .score-row:last-child{border-bottom:none}
+  .score-detail{margin-top:16px;text-align:left}
+</style>
+</head>
+<body>
+<div class="nav no-print">
+  <a href="index.html" class="back">← Index</a>
+  <button class="nav-btn active" onclick="showTab('cours',event)">Cours</button>
+  <button class="nav-btn" onclick="showTab('cheatsheet',event)">Cheat sheet</button>
+  <button class="nav-btn" onclick="showTab('quiz',event)">Quiz</button>
+</div>
+
+<!-- COURS -->
+<div class="tab-content active" id="tab-cours">
+  <h1>Chapitre 3 — Switching & LAN</h1>
+  <p class="subtitle">Switch · VLANs · 802.1Q · STP/RSTP · LACP · Segmentation réseau</p>
+  <button class="print-btn no-print" onclick="window.print()">Imprimer / PDF</button>
+
+  <h2>1. Le switch</h2>
+  <p>Un switch opère en couche 2 — il lit les adresses MAC et décide sur quel port envoyer une trame. Il maintient une <strong>table MAC</strong> apprise automatiquement en observant le trafic.</p>
+
+  <div class="grid2">
+    <div class="card">
+      <p class="card-title">Switch <span class="pill p-blue">Couche 2</span></p>
+      <p class="card-body">Lit les adresses MAC · connecte des machines dans le <strong>même réseau</strong> · transparent pour les couches supérieures · la trame n'est pas modifiée</p>
+    </div>
+    <div class="card">
+      <p class="card-title">Routeur <span class="pill p-coral">Couche 3</span></p>
+      <p class="card-body">Lit les adresses IP · connecte des <strong>réseaux différents</strong> · intervient activement (remplace les MAC, décide du chemin)</p>
+    </div>
+  </div>
+
+  <div class="formula">
+    Même subnet    →  switch suffit, communication directe via MAC
+    Subnets diff.  →  routeur obligatoire, communication via IP</div>
+
+  <div class="callout-warn">Le switch est transparent — du point de vue des couches 3+, PC A et PC B communiquent "directement". Le switch ne modifie rien, il relaie juste la trame au bon port.</div>
+
+  <h3>Switch non manageable vs manageable</h3>
+  <div class="grid2">
+    <div class="card">
+      <p class="card-title">Non manageable</p>
+      <p class="card-body">Plug and play. Aucune interface de gestion. Pas de VLANs, pas de STP configurable. Adapté aux très petits réseaux.</p>
+    </div>
+    <div class="card">
+      <p class="card-title">Manageable</p>
+      <p class="card-body">Accessible via port console (câble RJ45/USB), SSH/Telnet (IP de gestion) ou interface web HTTPS. Supporte VLANs, STP, LACP.</p>
+    </div>
+  </div>
+
+  <h2>2. Les VLANs</h2>
+  <p>Un VLAN découpe un switch physique en plusieurs switches virtuels isolés. Chaque port se voit attribuer un numéro de VLAN (1 à 4094). Les ports avec le même numéro peuvent se parler — les ports avec des numéros différents sont complètement isolés.</p>
+
+  <div class="callout">Pourquoi 4094 ? Le tag 802.1Q utilise 12 bits pour le numéro de VLAN → 2¹² = 4096 combinaisons. VLAN 0 et VLAN 4095 sont réservés → 4094 utilisables.</div>
+
+  <h3>Les deux types de ports</h3>
+  <div class="grid2">
+    <div class="card">
+      <p class="card-title">Port access</p>
+      <p class="card-body">Connecté à une machine finale (PC, imprimante, caméra). Appartient à <strong>un seul VLAN</strong>. La machine ne sait pas qu'un VLAN existe — totalement transparent.</p>
+    </div>
+    <div class="card">
+      <p class="card-title">Port trunk</p>
+      <p class="card-body">Connecté à un autre switch ou routeur. Transporte <strong>plusieurs VLANs</strong> sur un seul câble grâce aux tags 802.1Q. Utilisé pour relier switches entre eux.</p>
+    </div>
+  </div>
+
+  <h3>Le tag 802.1Q</h3>
+  <p>Sur un port trunk, chaque trame reçoit un tag de 4 octets indiquant son VLAN. Ce tag est ajouté par le switch à l'entrée et retiré à la sortie — les machines finales ne le voient jamais.</p>
+  <div class="formula">Trame normale  : [ETH] [IP] [TCP] [Données]
+Trame taguée   : [ETH] [802.1Q — VLAN 10] [IP] [TCP] [Données]</div>
+
+  <div class="callout-warn">Pour communiquer entre deux VLANs différents, le trafic doit obligatoirement passer par un routeur. Le switch seul ne peut pas router entre VLANs.</div>
+
+  <h2>3. Le STP — Spanning Tree Protocol</h2>
+  <p>Quand plusieurs switches sont interconnectés avec redondance, des boucles se forment. Un broadcast tourne en boucle infiniment entre les switches — c'est la <strong>tempête de broadcast</strong>. Le réseau est saturé en millisecondes.</p>
+  <p>STP résout ce problème en bloquant volontairement certains liens pour éliminer les boucles, tout en gardant la redondance disponible en cas de panne.</p>
+
+  <h3>Fonctionnement</h3>
+  <div class="card" style="margin-bottom:12px">
+    <p class="card-title">1. Élection du Root Bridge</p>
+    <p class="card-body">Les switches s'échangent des messages <strong>BPDU</strong> (Bridge Protocol Data Unit — heartbeats envoyés toutes les 2 secondes). Le switch avec la <strong>priorité la plus basse</strong> est élu Root Bridge. Si priorité égale, la MAC la plus basse départage.<br><br>En pratique on configure manuellement la priorité du switch core à 4096 (vs 32768 par défaut) pour forcer son élection.</p>
+  </div>
+  <div class="card" style="margin-bottom:12px">
+    <p class="card-title">2. Calcul de l'arbre</p>
+    <p class="card-body">Chaque switch calcule son chemin le plus court vers le Root Bridge selon les coûts de liens. Les liens redondants sont mis en état <strong>bloqué</strong>.</p>
+  </div>
+  <div class="card" style="margin-bottom:12px">
+    <p class="card-title">3. Détection de panne</p>
+    <p class="card-body">Si un switch cesse de recevoir des BPDUs d'un voisin, il déclare le lien mort et réactive automatiquement le port bloqué. Pas d'intervention humaine.</p>
+  </div>
+
+  <h3>États d'un port STP</h3>
+  <div class="grid3">
+    <div class="card"><p class="card-title">Forwarding</p><p class="card-body">Actif — le trafic passe normalement.</p></div>
+    <div class="card"><p class="card-title">Blocking</p><p class="card-body">Bloqué — aucun trafic. Écoute les BPDUs pour détecter une panne.</p></div>
+    <div class="card"><p class="card-title">Learning</p><p class="card-body">Transitoire — apprend les MAC sans encore faire passer le trafic.</p></div>
+  </div>
+
+  <h3>STP vs RSTP</h3>
+  <div class="grid2">
+    <div class="card">
+      <p class="card-title">STP classique <span class="pill p-gray">1985</span></p>
+      <p class="card-body"><strong>Passif</strong> — attend 20s sans BPDU avant de déclarer une panne, puis passe par Listening (15s) + Learning (15s).<br><br>Convergence : <strong>30 à 50 secondes</strong><br>Inacceptable pour VoIP, streaming, apps critiques.</p>
+    </div>
+    <div class="card">
+      <p class="card-title">RSTP <span class="pill p-green">802.1w — 2001</span></p>
+      <p class="card-body"><strong>Actif</strong> — négociation directe entre switches. Le voisin répond immédiatement quand un lien tombe. Port alternatif déjà en attente.<br><br>Convergence : <strong>moins d'une seconde</strong><br>Standard utilisé partout aujourd'hui.</p>
+    </div>
+  </div>
+
+  <h2>4. L'agrégation de liens — LACP</h2>
+  <p>Sans LACP, STP bloque les liens redondants — la bande passante de ces liens est perdue. LACP fusionne plusieurs liens physiques en un seul lien logique. STP voit ce lien logique comme un seul lien — pas de boucle, pas de blocage. Tous les liens physiques sont actifs simultanément.</p>
+
+  <div class="formula">Sans LACP : Switch A ←actif 1G→ Switch B  +  ←bloqué 1G→  =  1 Gbps réel
+Avec LACP : Switch A ←══════ LAG 2 Gbps ══════→ Switch B  =  2 Gbps réel</div>
+
+  <div class="grid2">
+    <div class="card">
+      <p class="card-title">Bande passante additive</p>
+      <p class="card-body">Les capacités des liens physiques s'additionnent. 2 × 1 Gbps = 2 Gbps de capacité totale pour l'ensemble des flux.<br><br>Un flux unique ne dépasse pas 1 Gbps — la répartition se fait par flux via un algorithme de hachage (MAC ou IP src/dst).</p>
+    </div>
+    <div class="card">
+      <p class="card-title">Redondance automatique</p>
+      <p class="card-body">Si un lien physique tombe, LACP bascule immédiatement tout le trafic sur les liens restants. Pas de coupure, pas d'intervention humaine.<br><br>La bande passante diminue le temps de la réparation, mais le réseau reste fonctionnel.</p>
+    </div>
+  </div>
+
+  <h3>LACP statique vs dynamique</h3>
+  <div class="grid2">
+    <div class="card"><p class="card-title">Statique</p><p class="card-body">Config manuelle des deux côtés. Simple mais risqué — une incohérence peut créer des boucles.</p></div>
+    <div class="card"><p class="card-title">LACP dynamique <span class="pill p-green">Recommandé</span></p><p class="card-body">Négociation automatique (802.3ad). Refuse de former le groupe si config incohérente. Évite les problèmes.</p></div>
+  </div>
+
+  <div class="footer">Chapitre 3 · <a href="index.html">← Retour à l'index</a> · Prochain : Chapitre 4 — Sécurité réseau</div>
+</div>
+
+<!-- CHEAT SHEET -->
+<div class="tab-content" id="tab-cheatsheet">
+  <h1>Cheat Sheet — Chapitre 3</h1>
+  <p class="subtitle">Switching & LAN · Référence rapide</p>
+  <button class="print-btn no-print" onclick="window.print()">Imprimer / PDF</button>
+
+  <p class="section-label">Switch vs Routeur</p>
+  <table>
+    <thead><tr><th></th><th>Switch</th><th>Routeur</th></tr></thead>
+    <tbody>
+      <tr><td>Couche</td><td class="td-m">2 (Liaison)</td><td class="td-m">3 (Réseau)</td></tr>
+      <tr><td>Lit</td><td class="td-m">Adresses MAC</td><td class="td-m">Adresses IP</td></tr>
+      <tr><td>Connecte</td><td class="td-m">Machines dans le même réseau</td><td class="td-m">Réseaux différents</td></tr>
+      <tr><td>Modifie la trame</td><td class="td-m">Non — transparent</td><td class="td-m">Oui — remplace les MAC</td></tr>
+    </tbody>
+  </table>
+
+  <p class="section-label">VLANs</p>
+  <div class="grid2">
+    <div class="card"><p class="card-title">Port access</p><p class="card-body">1 machine · 1 VLAN · pas de tag · transparent pour la machine</p></div>
+    <div class="card"><p class="card-title">Port trunk</p><p class="card-body">Plusieurs VLANs · tag 802.1Q · entre switches/routeurs</p></div>
+  </div>
+  <div class="formula">Tag 802.1Q : 12 bits → 4096 valeurs → 4094 VLANs utilisables (0 et 4095 réservés)</div>
+  <div class="callout-warn">Communiquer entre VLANs → obligatoirement via un routeur.</div>
+
+  <p class="section-label">STP / RSTP</p>
+  <table>
+    <thead><tr><th></th><th>STP</th><th>RSTP</th></tr></thead>
+    <tbody>
+      <tr><td>Mécanisme</td><td class="td-m">Passif — attend les timers</td><td class="td-m">Actif — négociation directe</td></tr>
+      <tr><td>Convergence</td><td class="td-m">30 à 50 secondes</td><td class="td-m">Moins d'une seconde</td></tr>
+      <tr><td>Standard</td><td class="td-m">802.1D (1985)</td><td class="td-m">802.1w (2001)</td></tr>
+      <tr><td>Usage</td><td class="td-m">Héritage historique</td><td class="td-m">Standard actuel</td></tr>
+    </tbody>
+  </table>
+
+  <p class="section-label">États de port STP</p>
+  <div class="grid3">
+    <div class="card"><p class="card-title">Forwarding</p><p class="card-body">Actif — trafic passe</p></div>
+    <div class="card"><p class="card-title">Blocking</p><p class="card-body">Bloqué — écoute BPDUs</p></div>
+    <div class="card"><p class="card-title">Learning</p><p class="card-body">Transitoire — apprend MACs</p></div>
+  </div>
+
+  <p class="section-label">Root Bridge</p>
+  <div class="card"><p class="card-body">Élu par priorité la plus basse (défaut 32768 → forcer à 4096). Départage par MAC la plus basse si égalité. Switches s'échangent des BPDUs toutes les 2 secondes.</p></div>
+
+  <p class="section-label">LACP — agrégation de liens</p>
+  <div class="grid2">
+    <div class="card"><p class="card-title">Bande passante</p><p class="card-body">Liens additionnés : 2 × 1 Gbps = 2 Gbps. Répartition par flux via hachage MAC/IP.</p></div>
+    <div class="card"><p class="card-title">Redondance</p><p class="card-body">Si lien tombe → bascule immédiate. STP voit un seul lien logique → pas de blocage.</p></div>
+  </div>
+  <div class="formula">Sans LACP : STP bloque 1 lien → 50% BP perdue
+Avec LACP : STP voit 1 lien logique → 100% BP utilisée + redondance</div>
+
+  <div class="footer">Chapitre 3 · <a href="index.html">← Retour à l'index</a></div>
+</div>
+
+<!-- QUIZ -->
+<div class="tab-content" id="tab-quiz">
+  <h1>Quiz — Chapitre 3</h1>
+  <p class="subtitle">5 questions · Réponds librement</p>
+  <div class="quiz-progress"><div class="quiz-fill" id="qfill" style="width:0%"></div></div>
+  <div id="quiz-container"></div>
+</div>
+
+<script>
+function showTab(id,e){
+  document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  e.target.classList.add('active');
+  if(id==='quiz') renderQuiz();
+}
+
+const questions=[
+  {q:"Quelle est la différence fondamentale entre un switch et un routeur ? Quand utilise-t-on l'un plutôt que l'autre ?",hint:"Pense aux couches OSI et à la notion de subnet.",keys:[['couche 2','mac','même réseau','même subnet'],['couche 3','ip','réseau différent','subnet différent']],correct:"Parfait. Switch = couche 2, lit MAC, connecte machines du même réseau. Routeur = couche 3, lit IP, connecte réseaux différents.",partial:"Tu as la distinction. Précise : switch pour machines dans le même subnet, routeur obligatoire entre subnets différents.",wrong:"Switch = couche 2, lit MAC, connecte machines du même réseau (même subnet). Routeur = couche 3, lit IP, connecte réseaux différents. Même subnet → switch suffit. Subnets différents → routeur obligatoire."},
+  {q:"Qu'est-ce qu'un VLAN ? Quelle est la différence entre un port access et un port trunk ?",hint:"VLAN = isolation logique sur un switch physique. Trunk = plusieurs VLANs sur un câble.",keys:[['vlan','isolation','segmentation','switch'],['access','trunk','802.1q','tag']],correct:"Parfait. VLAN = isolation logique sur switch physique. Port access = 1 machine, 1 VLAN. Port trunk = plusieurs VLANs sur 1 câble via tags 802.1Q.",partial:"Tu as le principe du VLAN. Ajoute la distinction access/trunk : access pour machines finales (1 VLAN), trunk pour liaisons entre switches (plusieurs VLANs, tags 802.1Q).",wrong:"VLAN = segmentation logique d'un switch physique en switches virtuels isolés. Port access : 1 machine, 1 VLAN, pas de tag. Port trunk : liaison entre switches, tous les VLANs sur 1 câble avec tags 802.1Q."},
+  {q:"Qu'est-ce qu'une tempête de broadcast ? Comment le STP la résout-il ?",hint:"Pense aux boucles réseau et au port bloqué.",keys:[['boucle','broadcast','tourne','infini','saturé'],['bloque','stp','root','arbre']],correct:"Parfait. Boucle réseau → broadcast tourne infiniment → réseau saturé. STP élit un Root Bridge et bloque certains liens pour créer un arbre sans boucle.",partial:"Tu as l'idée. Précise le mécanisme STP : élection d'un Root Bridge via BPDUs, calcul de l'arbre, blocage des liens redondants.",wrong:"Boucle réseau = broadcast tourne infiniment entre switches → réseau saturé en millisecondes. STP : élit un Root Bridge (priorité la plus basse), calcule le chemin le plus court vers lui, bloque les liens redondants."},
+  {q:"Quelle est la différence entre STP et RSTP ? Pourquoi RSTP a-t-il été créé ?",hint:"Passif vs actif. Temps de convergence.",keys:[['passif','actif','négociation','seconde','rapide'],['50','30','timer','convergence']],correct:"Parfait. STP passif → attend timers → 30-50s de convergence. RSTP actif → négociation directe → moins d'une seconde. Créé pour les usages modernes (VoIP, streaming).",partial:"Tu as l'essentiel. Précise : STP attend passivement 20s + timers = 50s. RSTP négocie activement entre switches = moins d'1s.",wrong:"STP classique = passif, attend 20s sans BPDU + Listening 15s + Learning 15s = 50s de convergence. RSTP = actif, négociation directe entre switches, port alternatif prêt → moins d'1s. Créé car 50s inacceptable pour VoIP, streaming, apps critiques."},
+  {q:"Comment fonctionne LACP ? Quels sont ses deux avantages par rapport à STP seul ?",hint:"Fusion de liens physiques en lien logique. STP voit quoi ?",keys:[['fusionne','agrège','logique','lag'],['bande passante','redondance','bp','gbps']],correct:"Parfait. LACP fusionne les liens physiques en un lien logique. STP voit un seul lien → pas de blocage. Avantages : bande passante additive + redondance automatique.",partial:"Tu as les avantages. Précise le mécanisme : LACP fusionne les liens en un lien logique → STP voit 1 lien → pas de port bloqué → toute la BP disponible.",wrong:"LACP fusionne plusieurs liens physiques en un seul lien logique (LAG). STP voit un seul lien → pas de boucle → pas de blocage. Avantages : (1) bande passante additive (2×1G=2G) et (2) redondance automatique (si lien tombe → bascule immédiate)."}
+];
+
+let checked=new Array(questions.length).fill(false);
+let scores=new Array(questions.length).fill(null);
+let rendered=false;
+
+function renderQuiz(){
+  if(rendered) return;
+  rendered=true;
+  const c=document.getElementById('quiz-container');
+  questions.forEach((q,i)=>{
+    const div=document.createElement('div');
+    div.className='card';
+    div.style.marginBottom='16px';
+    div.innerHTML=`<p class="q-num">Question ${i+1}/${questions.length}</p><p class="q-text">${q.q}</p><p class="q-hint">Indice : ${q.hint}</p><textarea class="q-input" id="ans-${i}" placeholder="Ta réponse..."></textarea><button class="q-btn" onclick="check(${i})">Vérifier</button><button class="q-btn q-btn-sec" onclick="reveal(${i})">Correction</button><div class="feedback" id="fb-${i}"></div>`;
+    c.appendChild(div);
+  });
+  const sum=document.createElement('div');
+  sum.id='summary';sum.style.display='none';
+  c.appendChild(sum);
+}
+
+function ev(a,keys){
+  const t=a.toLowerCase();
+  let m=0;
+  for(const g of keys) if(g.some(k=>t.includes(k))) m++;
+  return m===keys.length?'correct':m>=1?'partial':'wrong';
+}
+
+function check(i){
+  const v=document.getElementById('ans-'+i).value.trim();
+  if(!v) return;
+  const r=ev(v,questions[i].keys);
+  scores[i]=r;checked[i]=true;
+  const fb=document.getElementById('fb-'+i);
+  fb.className='feedback show '+r;
+  fb.innerHTML=`<strong>${{correct:'✓ Correct',partial:'~ Partiel',wrong:'✗ À revoir'}[r]}</strong> — ${questions[i][r]}`;
+  document.getElementById('qfill').style.width=(checked.filter(Boolean).length/questions.length*100)+'%';
+  if(checked.every(Boolean)) summary();
+}
+
+function reveal(i){
+  const fb=document.getElementById('fb-'+i);
+  fb.className='feedback show partial';
+  fb.innerHTML=`<strong>Correction :</strong> ${questions[i].wrong}`;
+  if(!checked[i]){checked[i]=true;scores[i]='wrong';document.getElementById('qfill').style.width=(checked.filter(Boolean).length/questions.length*100)+'%';}
+  if(checked.every(Boolean)) summary();
+}
+
+function summary(){
+  const s=document.getElementById('summary');
+  s.style.display='block';
+  const c=scores.filter(x=>x==='correct').length;
+  const p=scores.filter(x=>x==='partial').length;
+  const pct=Math.round((c+p*0.5)/questions.length*100);
+  s.innerHTML=`<div class="score-card"><div class="score-num">${pct}%</div><div class="score-label">${pct>=80?'Maîtrisé ✓':pct>=50?'En bonne voie':'À retravailler'}</div><div class="score-detail">${questions.map((q,i)=>`<div class="score-row"><span>Q${i+1} — ${q.q.substring(0,50)}...</span><span class="pill ${scores[i]==='correct'?'p-green':scores[i]==='partial'?'p-amber':'p-coral'}">${scores[i]==='correct'?'Correct':scores[i]==='partial'?'Partiel':'À revoir'}</span></div>`).join('')}</div></div>`;
+}
+</script>
+</body>
+</html>
